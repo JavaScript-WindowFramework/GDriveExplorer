@@ -1,0 +1,28 @@
+[data-panel='GDrivePanel'] {
+  line-height: 0;
+}
+
+[data-panel='GDrivePanel'] img {
+  box-sizing: border-box;
+  width: calc( 100% - 2px);
+  height: auto;
+  padding: 2px;
+  margin: 1px;
+  border: outset 1px;
+  background-color: #96c0b0;
+}
+
+[data-panel='GDrivePanel'] img:hover {
+  border: solid 1px;
+}
+
+[data-panel='GDrivePanel'] img:active {
+  border: inset 1px;
+}
+
+[data-style='InputWindow'] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "gdriveexplorer",
+  "version": "1.0.0",
+  "description": "GoogleDrive操作アプリのサンプル",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JavaScript-WindowFramework/GDriveExplorer.git"
+  },
+  "author": "空雲",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JavaScript-WindowFramework/GDriveExplorer/issues"
+  },
+  "homepage": "https://github.com/JavaScript-WindowFramework/GDriveExplorer#readme",
+  "dependencies": {
+    "@types/gapi.auth2": "0.0.48",
+    "@types/gapi.client.drive": "^3.0.1"
+  }
+}
