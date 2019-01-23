@@ -1,40 +1,26 @@
 namespace JSW{
 
-/**
- *GoogleDrive操作用クラス
- *
- * @export
- * @class GoogleDrive
- */
-export class GoogleDrive {
-	mClientId: string
 
-	/**
-	 *Creates an instance of GoogleDrive.
-	 * @param {string} clientId GoogleのOAuthクライアントID
-	 * @param {()=>void} [callback] 初期化時のコールバック
-	 * @memberof GoogleDrive
-	 */
-	constructor(clientId:string, callback?:()=>void) {
-		this.mClientId = clientId
-
-		gapi.load('client:auth2', () => {
-			console.log('API Loaded')
-
-			gapi.client.init({
-				clientId: this.mClientId,
-				scope: 'https://www.googleapis.com/auth/drive',
-				discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-			}).then(function () {
-				if (callback) {
-					callback()
-				}
-			}).catch(function(e){
-				console.log(e)
+export class GoogleAuth{
+	mAuthInstance : gapi.auth2.GoogleAuth;
+	init(clientId:string,scope:string,discovery:string|string[]) {
+		return new Promise((resolv,reject)=>{
+			const that = this
+			gapi.load('client:auth2', () => {
+				let discoverys = discovery instanceof Array?discovery:[discovery]
+				gapi.client.init({
+					clientId: clientId,
+					scope: scope,
+					discoveryDocs: discoverys
+				}).then(function () {
+					that.mAuthInstance = gapi.auth2.getAuthInstance()
+					resolv()
+				}).catch(function(e){
+					reject(e)
+				})
 			})
-		});
+		})
 	}
-
 	/**
 	 *サインイン状態のチェック
 	 *
@@ -42,12 +28,11 @@ export class GoogleDrive {
 	 * @memberof GoogleDrive
 	 */
 	isSignIn():boolean {
-		if (!gapi.auth2)
-			return false;
-		return gapi.auth2.getAuthInstance().isSignedIn.get()
+		if(!this.mAuthInstance)
+			return false
+		return this.mAuthInstance.isSignedIn.get()
 	}
-
-	/**
+		/**
 	 *サインインの要求
 	 *
 	 * @returns {Promise<boolean>}
@@ -56,9 +41,10 @@ export class GoogleDrive {
 	 * @memberof GoogleDrive
 	 */
 	signIn() : Promise<boolean>{
+		const that = this
 		return new Promise((resolve: (flag?:boolean)=> void, reject:(value?:{message})=>void)=>{
 			if (gapi.auth2) {
-				const auth = gapi.auth2.getAuthInstance();
+				const auth = that.mAuthInstance;
 				const flag = auth.isSignedIn.get()
 				if (flag)
 					resolve(flag);
@@ -81,15 +67,70 @@ export class GoogleDrive {
 	* @reject value エラーメッセージ
 	*/
 	signOut() : Promise<boolean>{
+		const that = this
 		return new Promise((resolve:(value?: boolean)=> void, reject:(value?:{message})=>void)=>{
 			if (!gapi.auth2)
 				reject({message:'APIが初期化されていない'})
 			else
-				gapi.auth2.getAuthInstance().signOut().then((flag)=>{
+				that.mAuthInstance.signOut().then((flag)=>{
 					resolve(flag)
 				})
 		})
 
+	}
+}
+/**
+ *GoogleDrive操作用クラス
+ *
+ * @export
+ * @class GoogleDrive
+ */
+export class GoogleDrive {
+	mAuth:GoogleAuth
+	/**
+	 *Creates an instance of GoogleDrive.
+	 * @param {string} clientId GoogleのOAuthクライアントID
+	 * @param {()=>void} [callback] 初期化時のコールバック
+	 * @memberof GoogleDrive
+	 */
+	constructor(clientId:string, callback?:()=>void) {
+		this.mAuth = new GoogleAuth()
+		this.mAuth.init(clientId,
+		'https://www.googleapis.com/auth/drive',
+		'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest').then(()=>{
+			callback()
+		})
+	}
+
+	/**
+	 *サインイン状態のチェック
+	 *
+	 * @returns {boolean} サインイン状態
+	 * @memberof GoogleDrive
+	 */
+	isSignIn():boolean {
+		return this.mAuth.isSignIn()
+	}
+
+	/**
+	 *サインインの要求
+	 *
+	 * @returns {Promise<boolean>}
+	 * @resolve flag true:成功 false:失敗
+	 * @reject value エラーメッセージ
+	 * @memberof GoogleDrive
+	 */
+	signIn() : Promise<boolean>{
+		return this.mAuth.signIn()
+	}
+	/**
+	* サインアウトンの要求
+	* @returns {Promise<boolean>}
+	* @resolve flag true:成功 false:失敗
+	* @reject value エラーメッセージ
+	*/
+	signOut() : Promise<boolean>{
+		return this.mAuth.signOut()
 	}
 	/**
 	 *ファイルのアップロード

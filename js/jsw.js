@@ -1,3 +1,7 @@
+/**
+ * JavaScriptWindowフレームワーク用名前空間
+ * namespaceの前に「export」を入れると、モジュールとして利用可能
+*/
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -21,9 +25,6 @@ var __values = (this && this.__values) || function (o) {
         }
     };
 };
-/**
- * JavaScriptWindowフレームワーク用名前空間
-*/
 var JSW;
 (function (JSW) {
     /**
@@ -38,7 +39,7 @@ var JSW;
         /**
          * マウスとタッチイベントの座標取得処理
          * @param  {MouseEvent|TouchEvent} e
-         * @returns Point
+         * @returns {Point} マウスの座標
          */
         Jsw.getPos = function (e) {
             var p;
@@ -172,7 +173,7 @@ var JSW;
     addEventListener("mousemove", mouseMove, false);
     addEventListener("touchmove", mouseMove, { passive: false });
     //マウスが離された場合に選択をリセット
-    function mouseUp(e) {
+    function mouseUp() {
         Jsw.moveNode = null;
         Jsw.frame = null;
     }
@@ -269,7 +270,7 @@ var JSW;
             //ノードを本文へ追加
             document.body.appendChild(hNode);
             //更新要求
-            //this.layout()
+            this.layout();
             //新規ウインドウをフォアグラウンドにする
             this.foreground(false);
         }
@@ -405,8 +406,11 @@ var JSW;
             this.setPos(x, y);
             this.setSize(width, height);
             //移動フレーム処理時はイベントを止める
-            //if (frameIndex < 9)
-            //	if (e.preventDefault) e.preventDefault(); else e.returnValue = false
+            if (frameIndex < 9)
+                if (e.preventDefault)
+                    e.preventDefault();
+                else
+                    e.returnValue = false;
         };
         /**
          *イベントの受け取り
@@ -722,7 +726,6 @@ var JSW;
         Window.prototype.onLayout = function (flag) {
             if (flag || this.JData.redraw) {
                 if (this.hNode.dataset.stat == 'maximize') {
-                    var parent_1 = this.hNode.parentNode;
                     this.setPos(0, 0);
                     this.setSize(this.getParentWidth(), this.getParentHeight());
                 }
@@ -1507,20 +1510,20 @@ var JSW;
             var row1 = document.createElement('div');
             row1.dataset.kind = 'TreeRow';
             hNode.appendChild(row1);
-            row1.addEventListener("click", function (e) {
+            row1.addEventListener("click", function () {
                 that.selectItem();
             });
             row1.addEventListener('dragstart', function (e) {
                 that.getTreeView().callEvent('itemDragStart', { item: that, event: e });
             });
-            row1.addEventListener('dragleave', function (e) {
+            row1.addEventListener('dragleave', function () {
                 row1.dataset.drag = '';
             });
-            row1.addEventListener('dragenter', function (e) {
+            row1.addEventListener('dragenter', function () {
                 row1.dataset.drag = 'over';
                 event.preventDefault();
             });
-            row1.addEventListener('dragover', function (e) {
+            row1.addEventListener('dragover', function () {
                 //row1.dataset.drag = 'over'
                 event.preventDefault();
             });
@@ -1859,7 +1862,7 @@ var JSW;
          */
         TreeView.prototype.selectItem = function (item, scroll) {
             var that = this;
-            function animationEnd(e) {
+            function animationEnd() {
                 this.removeEventListener('animationend', animationEnd);
                 that.getClient().scrollTo(0, item.getNode().offsetTop - that.getClientHeight() / 2);
             }
@@ -1869,9 +1872,9 @@ var JSW;
                 item.getNode().dataset.select = 'true';
                 this.mSelectItem = item;
                 item.openItem(true);
-                var parent_2 = item;
-                while (parent_2 = parent_2.getParentItem()) {
-                    parent_2.openItem(true);
+                var parent_1 = item;
+                while (parent_1 = parent_1.getParentItem()) {
+                    parent_1.openItem(true);
                 }
                 if (scroll) {
                     this.getClient().scrollTo(0, item.getNode().offsetTop - this.getClientHeight() / 2);
@@ -1939,6 +1942,7 @@ var JSW;
             _this.sortVector = false;
             _this.columnWidth = [];
             _this.columnAutoIndex = -1;
+            _this.areaWidth = 0;
             var that = _this;
             var client = _this.getClient();
             client.dataset.kind = 'ListView';
@@ -1970,7 +1974,7 @@ var JSW;
                     headerBack.style.marginLeft = this.scrollLeft + 'px';
                 }
             });
-            client.addEventListener('dragover', function (e) {
+            client.addEventListener('dragover', function () {
                 event.preventDefault();
             });
             client.addEventListener('drop', function (e) {
@@ -2360,7 +2364,7 @@ var JSW;
                 if (column.vector)
                     cell.style.justifyContent = vector[column.vector];
                 column.appendChild(cell);
-                cell.addEventListener('mouseover', function (e) {
+                cell.addEventListener('mouseover', function () {
                     var index = ListView.getIndexOfNode(this);
                     for (var i_2 = 0, length_12 = columns.length; i_2 < length_12; i_2++) {
                         var column_3 = columns[i_2];
@@ -2376,7 +2380,7 @@ var JSW;
                     var index2 = ListView.getIndexOfNode(this.parentNode);
                     that.callEvent('itemDragStart', { itemIndex: index, subItemIndex: index2, event: e });
                 });
-                cell.addEventListener('dragleave', function (e) {
+                cell.addEventListener('dragleave', function () {
                     var e_3, _a;
                     var index = ListView.getIndexOfNode(this);
                     var cells = that.getLineCells(index);
@@ -2394,7 +2398,7 @@ var JSW;
                         finally { if (e_3) throw e_3.error; }
                     }
                 });
-                cell.addEventListener('dragenter', function (e) {
+                cell.addEventListener('dragenter', function () {
                     var e_4, _a;
                     var index = ListView.getIndexOfNode(this);
                     var cells = that.getLineCells(index);
@@ -2413,7 +2417,7 @@ var JSW;
                     }
                     event.preventDefault();
                 });
-                cell.addEventListener('dragover', function (e) {
+                cell.addEventListener('dragover', function () {
                     event.preventDefault();
                 });
                 cell.addEventListener('drop', function (e) {
@@ -2480,6 +2484,10 @@ var JSW;
             }
             else
                 this.setItem(index, 0, value);
+            if (this.areaWidth !== this.itemArea.clientWidth) {
+                this.areaWidth = this.itemArea.clientWidth;
+                this.resize();
+            }
             return index;
         };
         /**
@@ -2553,7 +2561,7 @@ var JSW;
             var headers = this.headers;
             var resizers = this.resizers;
             var itemArea = this.itemArea;
-            var lmitWidth = this.getClientWidth();
+            var lmitWidth = itemArea.clientWidth;
             for (var i = 0, length_13 = headers.childElementCount; i < length_13; i++) {
                 lmitWidth -= this.columnWidth[i];
             }
@@ -2581,4 +2589,4 @@ var JSW;
     }(Window));
     JSW.ListView = ListView;
 })(JSW || (JSW = {}));
-//# sourceMappingURL=Window.js.map
+//# sourceMappingURL=jsw.js.map

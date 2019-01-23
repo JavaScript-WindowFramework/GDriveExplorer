@@ -2,11 +2,12 @@
 	"compilerOptions": {
 		"sourceMap": true,
 		"target": "es5",
+		"module": "es2015",
 		"outDir": "./js/",
-		"rootDir": "./ts/",
+		"rootDir": "./src/",
 		"downlevelIteration": true,
 		"lib": [
-			"es2015",
+			"es2016",
 			"dom"
 		]
 	}

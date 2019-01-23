@@ -1,59 +1,51 @@
 var JSW;
 (function (JSW) {
-    /**
-     *GoogleDrive操作用クラス
-     *
-     * @export
-     * @class GoogleDrive
-     */
-    var GoogleDrive = /** @class */ (function () {
-        /**
-         *Creates an instance of GoogleDrive.
-         * @param {string} clientId GoogleのOAuthクライアントID
-         * @param {()=>void} [callback] 初期化時のコールバック
-         * @memberof GoogleDrive
-         */
-        function GoogleDrive(clientId, callback) {
+    var GoogleAuth = /** @class */ (function () {
+        function GoogleAuth() {
+        }
+        GoogleAuth.prototype.init = function (clientId, scope, discovery) {
             var _this = this;
-            this.mClientId = clientId;
-            gapi.load('client:auth2', function () {
-                console.log('API Loaded');
-                gapi.client.init({
-                    clientId: _this.mClientId,
-                    scope: 'https://www.googleapis.com/auth/drive',
-                    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
-                }).then(function () {
-                    if (callback) {
-                        callback();
-                    }
-                }).catch(function (e) {
-                    console.log(e);
+            return new Promise(function (resolv, reject) {
+                var that = _this;
+                gapi.load('client:auth2', function () {
+                    var discoverys = discovery instanceof Array ? discovery : [discovery];
+                    gapi.client.init({
+                        clientId: clientId,
+                        scope: scope,
+                        discoveryDocs: discoverys
+                    }).then(function () {
+                        that.mAuthInstance = gapi.auth2.getAuthInstance();
+                        resolv();
+                    }).catch(function (e) {
+                        reject(e);
+                    });
                 });
             });
-        }
+        };
         /**
          *サインイン状態のチェック
          *
          * @returns {boolean} サインイン状態
          * @memberof GoogleDrive
          */
-        GoogleDrive.prototype.isSignIn = function () {
-            if (!gapi.auth2)
+        GoogleAuth.prototype.isSignIn = function () {
+            if (!this.mAuthInstance)
                 return false;
-            return gapi.auth2.getAuthInstance().isSignedIn.get();
+            return this.mAuthInstance.isSignedIn.get();
         };
         /**
-         *サインインの要求
-         *
-         * @returns {Promise<boolean>}
-         * @resolve flag true:成功 false:失敗
-         * @reject value エラーメッセージ
-         * @memberof GoogleDrive
-         */
-        GoogleDrive.prototype.signIn = function () {
+     *サインインの要求
+     *
+     * @returns {Promise<boolean>}
+     * @resolve flag true:成功 false:失敗
+     * @reject value エラーメッセージ
+     * @memberof GoogleDrive
+     */
+        GoogleAuth.prototype.signIn = function () {
+            var that = this;
             return new Promise(function (resolve, reject) {
                 if (gapi.auth2) {
-                    var auth = gapi.auth2.getAuthInstance();
+                    var auth = that.mAuthInstance;
                     var flag = auth.isSignedIn.get();
                     if (flag)
                         resolve(flag);
@@ -75,15 +67,67 @@ var JSW;
         * @resolve flag true:成功 false:失敗
         * @reject value エラーメッセージ
         */
-        GoogleDrive.prototype.signOut = function () {
+        GoogleAuth.prototype.signOut = function () {
+            var that = this;
             return new Promise(function (resolve, reject) {
                 if (!gapi.auth2)
                     reject({ message: 'APIが初期化されていない' });
                 else
-                    gapi.auth2.getAuthInstance().signOut().then(function (flag) {
+                    that.mAuthInstance.signOut().then(function (flag) {
                         resolve(flag);
                     });
             });
+        };
+        return GoogleAuth;
+    }());
+    JSW.GoogleAuth = GoogleAuth;
+    /**
+     *GoogleDrive操作用クラス
+     *
+     * @export
+     * @class GoogleDrive
+     */
+    var GoogleDrive = /** @class */ (function () {
+        /**
+         *Creates an instance of GoogleDrive.
+         * @param {string} clientId GoogleのOAuthクライアントID
+         * @param {()=>void} [callback] 初期化時のコールバック
+         * @memberof GoogleDrive
+         */
+        function GoogleDrive(clientId, callback) {
+            this.mAuth = new GoogleAuth();
+            this.mAuth.init(clientId, 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest').then(function () {
+                callback();
+            });
+        }
+        /**
+         *サインイン状態のチェック
+         *
+         * @returns {boolean} サインイン状態
+         * @memberof GoogleDrive
+         */
+        GoogleDrive.prototype.isSignIn = function () {
+            return this.mAuth.isSignIn();
+        };
+        /**
+         *サインインの要求
+         *
+         * @returns {Promise<boolean>}
+         * @resolve flag true:成功 false:失敗
+         * @reject value エラーメッセージ
+         * @memberof GoogleDrive
+         */
+        GoogleDrive.prototype.signIn = function () {
+            return this.mAuth.signIn();
+        };
+        /**
+        * サインアウトンの要求
+        * @returns {Promise<boolean>}
+        * @resolve flag true:成功 false:失敗
+        * @reject value エラーメッセージ
+        */
+        GoogleDrive.prototype.signOut = function () {
+            return this.mAuth.signOut();
         };
         /**
          *ファイルのアップロード
