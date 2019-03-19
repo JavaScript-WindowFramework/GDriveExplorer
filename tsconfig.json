@@ -3,12 +3,13 @@
 		"sourceMap": true,
 		"target": "es5",
 		"module": "es2015",
-		"outDir": "./js/",
-		"rootDir": "./src/",
+		"outDir": "../dist/js/",
+		"rootDir": ".",
 		"downlevelIteration": true,
 		"lib": [
 			"es2016",
 			"dom"
-		]
+		],
+		"typeRoots": ["node_modules/@types"]
 	}
 }

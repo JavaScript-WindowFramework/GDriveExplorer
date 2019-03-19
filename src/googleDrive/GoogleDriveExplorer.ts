@@ -66,17 +66,16 @@ class DriveTree extends JSW.TreeView {
 		//ツリーが展開されたら下の階層を先読み
 		const that = this
 		this.addEventListener('itemOpen', function (e) {
-			let params = e.params
-			if (params.opened)
-				that.loadChild(params.item.getItemValue())
+			if (e.opened)
+				that.loadChild(e.item.getItemValue())
 		})
 		//選択されたらファイルリストを読み出す
 		this.addEventListener('itemSelect', function (e) {
-			googleExplorer.loadFiles(e.params.item.getItemValue())
+			googleExplorer.loadFiles(e.item.getItemValue())
 		})
 		this.addEventListener('itemDrop', function (e) {
-			let t = e.params.event.dataTransfer
-			let item = e.params.item
+			let t = e.event.dataTransfer
+			let item = e.item
 			try {
 				let text = t.getData('text/plain')
 				let value = JSON.parse(text)
@@ -89,8 +88,8 @@ class DriveTree extends JSW.TreeView {
 
 		})
 		this.addEventListener('itemDragStart', function (e) {
-			let item = e.params.item
-			let event = e.params.event
+			let item = e.item
+			let event = e.event
 			event.dataTransfer.effectAllowed = 'move'
 			event.dataTransfer.setData('text/plain', JSON.stringify({ type: 'DriveItem', value: item.getItemValue() }));
 		})
@@ -213,17 +212,15 @@ class DriveList extends JSW.ListView {
 		this.sortItem(0, true)
 		let that = this
 		this.addEventListener('itemDblClick', function (e) {
-			let p = e.params
-			let file = that.getItemValue(p.itemIndex)
+			let file = that.getItemValue(e.itemIndex)
 			if (file.mimeType === 'application/vnd.google-apps.folder')
 				that.mGoogleExplorer.selectDir(file.id)	//フォルダなら選択
 			else
 				location.href = file.webContentLink		//データのダウンロード
 		})
 		this.addEventListener('itemDragStart', function (e) {
-			let p = e.params
-			let index = p.itemIndex
-			let event = p.event as DragEvent
+			let index = e.itemIndex
+			let event = e.event as DragEvent
 			event.dataTransfer.effectAllowed = 'move'
 			let ids = [];
 
@@ -391,8 +388,8 @@ class InputWindow extends JSW.FrameWindow {
 
 	}
 	addEventListener(type: 'textInput', callback: (event: INPUTWINDOW_EVENT_TEXT_INPUT) => void): void;
-	addEventListener(type: string, callback: any, options?) {
-		super.addEventListener(type, callback, options)
+	addEventListener(type: string, callback: any) {
+		super.addEventListener(type, callback)
 	}
 }
 

@@ -21,6 +21,7 @@ var __values = (this && this.__values) || function (o) {
         }
     };
 };
+/// <reference path="../../js/jsw.d.ts" />
 /**
  * Googleサインイン用ウインドウ
 */
@@ -87,17 +88,16 @@ var DriveTree = /** @class */ (function (_super) {
         //ツリーが展開されたら下の階層を先読み
         var that = _this;
         _this.addEventListener('itemOpen', function (e) {
-            var params = e.params;
-            if (params.opened)
-                that.loadChild(params.item.getItemValue());
+            if (e.opened)
+                that.loadChild(e.item.getItemValue());
         });
         //選択されたらファイルリストを読み出す
         _this.addEventListener('itemSelect', function (e) {
-            googleExplorer.loadFiles(e.params.item.getItemValue());
+            googleExplorer.loadFiles(e.item.getItemValue());
         });
         _this.addEventListener('itemDrop', function (e) {
-            var t = e.params.event.dataTransfer;
-            var item = e.params.item;
+            var t = e.event.dataTransfer;
+            var item = e.item;
             try {
                 var text = t.getData('text/plain');
                 var value = JSON.parse(text);
@@ -109,8 +109,8 @@ var DriveTree = /** @class */ (function (_super) {
             //console.log(text)
         });
         _this.addEventListener('itemDragStart', function (e) {
-            var item = e.params.item;
-            var event = e.params.event;
+            var item = e.item;
+            var event = e.event;
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setData('text/plain', JSON.stringify({ type: 'DriveItem', value: item.getItemValue() }));
         });
@@ -293,8 +293,7 @@ var DriveList = /** @class */ (function (_super) {
         _this.sortItem(0, true);
         var that = _this;
         _this.addEventListener('itemDblClick', function (e) {
-            var p = e.params;
-            var file = that.getItemValue(p.itemIndex);
+            var file = that.getItemValue(e.itemIndex);
             if (file.mimeType === 'application/vnd.google-apps.folder')
                 that.mGoogleExplorer.selectDir(file.id); //フォルダなら選択
             else
@@ -302,9 +301,8 @@ var DriveList = /** @class */ (function (_super) {
         });
         _this.addEventListener('itemDragStart', function (e) {
             var e_7, _a;
-            var p = e.params;
-            var index = p.itemIndex;
-            var event = p.event;
+            var index = e.itemIndex;
+            var event = e.event;
             event.dataTransfer.effectAllowed = 'move';
             var ids = [];
             if (that.isSelectItem(index)) {
@@ -485,8 +483,8 @@ var InputWindow = /** @class */ (function (_super) {
         input.focus();
         return _this;
     }
-    InputWindow.prototype.addEventListener = function (type, callback, options) {
-        _super.prototype.addEventListener.call(this, type, callback, options);
+    InputWindow.prototype.addEventListener = function (type, callback) {
+        _super.prototype.addEventListener.call(this, type, callback);
     };
     return InputWindow;
 }(JSW.FrameWindow));
