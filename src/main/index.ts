@@ -4,7 +4,7 @@ const clientID = '666143344271-pnu2li1ilk85pg597ohvabs9e31n70gf.apps.googleuserc
  * 初期実行関数
 */
 function Main() {
-	let info = new JSW.FrameWindow()
+	let info = new JWF.FrameWindow()
 	info.setTitle('説明')
 	info.setScroll(true)
 	info.getClient().style.padding = '20px'

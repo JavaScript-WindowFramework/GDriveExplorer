@@ -1,4 +1,4 @@
-namespace JSW{
+namespace JWF{
 
 
 export class GoogleAuth{

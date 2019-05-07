@@ -1,8 +1,8 @@
 /**
  * Googleサインイン用ウインドウ
 */
-class GoogleSignWindow extends JSW.FrameWindow {
-	constructor(drive: JSW.GoogleDrive, func) {
+class GoogleSignWindow extends JWF.FrameWindow {
+	constructor(drive: JWF.GoogleDrive, func) {
 		super()
 		this.setTitle('ログイン')
 		this.setSize(180, 100)
@@ -34,9 +34,9 @@ class GoogleSignWindow extends JSW.FrameWindow {
 /**
  * メッセージ表示用ウインドウ
 */
-class MessageBox extends JSW.FrameWindow {
+class MessageBox extends JWF.FrameWindow {
 	mTextNode: HTMLElement
-	constructor(parent: JSW.Window, title: string, msg: string) {
+	constructor(parent: JWF.Window, title: string, msg: string) {
 		super()
 		let client = this.getClient()
 		client.style.display = 'flex'
@@ -58,7 +58,7 @@ class MessageBox extends JSW.FrameWindow {
 /**
  * GoogleDriveディレクトリリスト用ツリービュー
 */
-class DriveTree extends JSW.TreeView {
+class DriveTree extends JWF.TreeView {
 	mGoogleExplorer: GoogleExplorer
 	constructor(googleExplorer: GoogleExplorer) {
 		super()
@@ -164,7 +164,7 @@ class DriveTree extends JSW.TreeView {
 			for (let pid of parents.keys()){
 				let item = that.findItemFromValue(pid)
 				if (item) {
-					let childIds = new Map<string,JSW.TreeItem>()
+					let childIds = new Map<string,JWF.TreeItem>()
 					//子アイテムのファイルIDを収集
 					for (let i = 0, l = item.getChildCount(); i < l; i++) {
 						let child = item.getChildItem(i)
@@ -196,7 +196,7 @@ class DriveTree extends JSW.TreeView {
 /**
  * GoogleDriveファイルリスト用リストビュー
 */
-class DriveList extends JSW.ListView {
+class DriveList extends JWF.ListView {
 	mGoogleExplorer: GoogleExplorer
 	mSelectId: string
 	constructor(googleExplorer: GoogleExplorer) {
@@ -330,7 +330,7 @@ class DriveList extends JSW.ListView {
 /**
  * GoogleDrive操作用パネル
 */
-class DrivePanel extends JSW.Panel {
+class DrivePanel extends JWF.Panel {
 	mGoogleExplorer: GoogleExplorer
 	constructor(googleExplorer: GoogleExplorer) {
 		super()
@@ -349,7 +349,7 @@ class DrivePanel extends JSW.Panel {
 interface INPUTWINDOW_EVENT_TEXT_INPUT extends Event {
 	params: { value: string }
 }
-class InputWindow extends JSW.FrameWindow {
+class InputWindow extends JWF.FrameWindow {
 	constructor() {
 		super()
 		const that = this
@@ -396,8 +396,8 @@ class InputWindow extends JSW.FrameWindow {
 /**
  * GoogleDrive操作用親ウインドウ
 */
-class GoogleExplorer extends JSW.FrameWindow {
-	mGoogleDrive: JSW.GoogleDrive
+class GoogleExplorer extends JWF.FrameWindow {
+	mGoogleDrive: JWF.GoogleDrive
 	mListView: DriveList
 	mTreeView: DriveTree
 	/**
@@ -409,13 +409,13 @@ class GoogleExplorer extends JSW.FrameWindow {
 		super()
 		this.setTitle('GDriveExlorer')
 
-		this.mGoogleDrive = new JSW.GoogleDrive(clientId,
+		this.mGoogleDrive = new JWF.GoogleDrive(clientId,
 			function () {
 				this.loadTree()
 			}.bind(this)
 		)
 
-		let splitter = new JSW.Splitter
+		let splitter = new JWF.Splitter
 		this.addChild(splitter, 'client')
 		splitter.setSplitterPos(200)
 

@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"target": "es5",
+		"module": "amd",
+		"composite": true,
+		"declaration": true,
+		"outFile": "../../dist/js/jwf.js",
+		"rootDir": "./jwf",
+		"moduleResolution": "node",
+		"lib": [
+			"es2017",
+			"dom"
+		]
+	}
+}

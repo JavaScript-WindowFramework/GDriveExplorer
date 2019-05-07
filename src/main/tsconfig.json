@@ -2,14 +2,14 @@
 	"compilerOptions": {
 		"sourceMap": true,
 		"target": "es5",
-		"module": "es2015",
-		"outDir": "../dist/js/",
+		"module": "amd",
+		"outFile": "../../dist/js/index.js",
 		"rootDir": ".",
 		"downlevelIteration": true,
 		"lib": [
 			"es2016",
 			"dom"
-		],
-		"typeRoots": ["node_modules/@types"]
-	}
+		]
+	},
+	"references": [{"path":"../lib"}]
 }

@@ -1,0 +1,55 @@
+{
+  "bundle": {
+    "commonSourceDirectory": "y:/GDriveExplorer/src/lib/jwf/",
+    "sourceFiles": [
+      "y:/GDriveExplorer/src/lib/jwf/src/Adapter.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Jwf.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Window.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Button.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/CalendarView.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/CheckBox.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/DrawerView.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Label.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Libs.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/ListView.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/MessageBox.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Panel.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/SelectBox.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/Splitter.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/TableFormView.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/TextBox.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/TreeView.ts",
+      "y:/GDriveExplorer/src/lib/jwf/src/es6-promise.auto.ts"
+    ],
+    "js": {
+      "sections": [
+        {
+          "pos": 0,
+          "end": 597,
+          "kind": "emitHelpers",
+          "data": "typescript:extends"
+        },
+        {
+          "pos": 599,
+          "end": 180418,
+          "kind": "text"
+        }
+      ],
+      "sources": {
+        "helpers": [
+          "typescript:extends"
+        ]
+      }
+    },
+    "dts": {
+      "sections": [
+        {
+          "pos": 0,
+          "end": 40482,
+          "kind": "text"
+        }
+      ]
+    }
+  },
+  "version": "3.4.5"
+}
